@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSentinel | Scam & Threat Detection</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #0f0f0f;
+            color: #00ff00;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            width: 100%;
+            background: #000000;
+            padding: 25px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 255, 0, 0.2);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 34px;
+            font-weight: bold;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        .container {
+            margin-top: 150px;
+            background: #111;
+            padding: 40px;
+            border-radius: 12px;
+            width: 85%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            box-shadow: 0 0 15px #00ff00;
+        }
+
+        h2, h3, label {
+            color: #39ff14;
+        }
+
+        input, textarea {
+            width: 95%;
+            padding: 14px;
+            font-size: 18px;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            background-color: #1a1a1a;
+            color: #00ff00;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background-color: #00ff00;
+            color: #000000;
+            padding: 14px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            border: none;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #39ff14;
+            transform: scale(1.05);
+        }
+
+        .spinner {
+            display: none;
+            margin: 10px auto;
+            border: 5px solid #333;
+            border-top: 5px solid #00ff00;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 18px;
+            background-color: #1a1a1a;
+            border: 1px solid #00ff00;
+        }
+
+        .benign { color: #00ff00; }
+        .defacement { color: #ffae00; }
+        .malware { color: #ff0000; }
+        .phishing { color: #00cfff; }
+
+        .info-box, .tips-box {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #121212;
+            border-left: 5px solid #00ff00;
+            text-align: left;
+        }
+
+        .info-box h3, .tips-box h3 {
+            color: #00ff00;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            text-align: left;
+        }
+
+        ul li {
+            margin-bottom: 8px;
+        }
+    </style>
+
+    <script>
+        function showSpinner(formId, spinnerId) {
+            document.getElementById(spinnerId).style.display = 'block';
+            setTimeout(() => {
+                document.getElementById(spinnerId).style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</head>
+<body>
+
+    <div class="navbar">
+        <h1><i class="fas fa-user-secret"></i> CyScamGuard</h1>
+    </div>
+
+    <div class="container">
+        <h2><i class="fas fa-code"></i> Welcome to CyScamGuard</h2>
+        <p><em>Protect yourself from email scams, phishing links, and malicious files using AI-powered threat detection.</em></p>
+
+        <div class="info-box">
+            <h3>🔍 What This Tool Does</h3>
+            <ul>
+                <li>📄 Scans uploaded PDFs or TXT files for scam or phishing content</li>
+                <li>🌐 Classifies URLs as <strong>benign</strong>, <strong>phishing</strong>, <strong>malware</strong>, or <strong>defacement</strong></li>
+                <li>🧠 Uses Google Gemini AI to intelligently analyze threats</li>
+            </ul>
+        </div>
+
+        <h2><i class="fas fa-bug"></i> Malicious File Detection</h2>
+        <form action="/scam/" method="post" enctype="multipart/form-data" onsubmit="showSpinner('fileForm', 'fileSpinner')">
+            <label for="file"><strong>Upload a file (PDF/TXT only):</strong></label><br>
+            <input type="file" name="file" required><br>
+            <button type="submit"><i class="fas fa-upload scan-icon"></i> Analyze File</button>
+            <div id="fileSpinner" class="spinner"></div>
+        </form>
+
+        {% if message %}
+        <h3>📢 Result:</h3>
+        <div class="result-box">{{ message }}</div>
+        {% endif %}
+
+        <h2><i class="fas fa-link"></i> URL Threat Detection</h2>
+        <form method="post" action="/predict" onsubmit="showSpinner('urlForm', 'urlSpinner')">
+            <label for="url">Enter a URL to classify:</label>
+            <input type="text" name="url" required>
+            <button type="submit"><i class="fas fa-search"></i> Classify URL</button>
+            <div id="urlSpinner" class="spinner"></div>
+        </form>
+
+        {% if predicted_class %}
+        <div class="result-box {{ predicted_class.lower() }}">
+            <p><strong>URL:</strong> {{ input_url }}</p>
+            <p><strong>Classification:</strong> {{ predicted_class }}</p>
+        </div>
+        {% endif %}
+
+        <div class="tips-box">
+            <h3>🛡️ Scam & Phishing Prevention Tips</h3>
+            <ul>
+                <li>✅ Don’t click unknown links or download attachments from strangers</li>
+                <li>✅ Always verify the sender’s email address</li>
+                <li>✅ Look for HTTPS and secure padlock on websites</li>
+                <li>✅ Use antivirus & keep your browser updated</li>
+                <li>✅ Never share OTPs, passwords, or sensitive info over text/email</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>
